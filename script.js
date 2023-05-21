@@ -25,6 +25,10 @@ let calculator = (function () {
   };
 })();
 
+// TODO initial "." needs to spawn a "0" in front
+// TODO handle more than one "." entry
+// TODO handle division by 0
+// TODO add keyboard support
 function buttonSelection() {
   let part = this.className;
   if (part === "number") {
@@ -50,11 +54,13 @@ function numberChange(text) {
     isEqualPressed();
     calculator.noEnteredSecondNumFlag = false;
     calculator.num2 += text;
+    calculator.num2 = largeInput(calculator.num2);
     display[0].textContent = calculator.num2;
     calculator.repeatedOperatorFlag = true;
     calculator.prevOperator = calculator.operator;
   } else {
     initialDisplayCondition(text);
+    calculator.num1 = largeInput(calculator.num1);
     display[0].textContent = calculator.num1;
     calculator.noEnteredSecondNumFlag = true;
   }
@@ -75,6 +81,13 @@ function initialDisplayCondition(text) {
   }
 }
 
+function largeInput(num) {
+  if (num.length > 21) {
+    return deleteTailOfString(num);
+  }
+  return num;
+}
+
 function operatorButton(part) {
   const displayUpper = body.getElementsByClassName("displayUpper");
   const displayLower = body.getElementsByClassName("displayLower");
@@ -86,11 +99,12 @@ function operatorButton(part) {
 
 function makeChangesForRepeatedOperators() {
   if (calculator.repeatedOperatorFlag) {
-    calculator.num1 = operate(
+    let result = operate(
       calculator.num1,
       calculator.prevOperator,
       calculator.num2
     );
+    calculator.num1 = Math.round(result * 10000000000) / 10000000000;
     calculator.prevOperator = calculator.operator;
     calculator.num2 = "";
   }
@@ -115,8 +129,9 @@ function equalButton() {
   const displayLower = body.getElementsByClassName("displayLower");
   calculator.repeatedOperatorFlag = false;
   let result = operate(calculator.num1, calculator.operator, calculator.num2);
+  result = Math.round(result * 10000000000) / 10000000000;
   displayUpper[0].textContent =
-    calculator.num1 +
+    result +
     " " +
     operatorString(calculator.operator) +
     " " +
@@ -140,14 +155,17 @@ function clearButton() {
 function deleteButton() {
   const displayLower = body.getElementsByClassName("displayLower");
   if (calculator.noEnteredSecondNumFlag) {
-    let str = calculator.num1;
-    calculator.num1 = str.substr(0, str.length - 1);
+    calculator.num1 = deleteTailOfString(calculator.num1);
     displayLower[0].textContent = calculator.num1;
   } else {
-    let str = calculator.num2;
-    calculator.num2 = str.substr(0, str.length - 1);
+    calculator.num2 = deleteTailOfString(calculator.num2);
     displayLower[0].textContent = calculator.num2;
   }
+}
+
+function deleteTailOfString(number) {
+  let str = number;
+  return str.substr(0, str.length - 1);
 }
 
 function isOperator(part) {
@@ -166,7 +184,7 @@ function operate(num1, operator, num2) {
 }
 
 function add(num1, num2) {
-  return parseInt(num1) + parseInt(num2);
+  return parseFloat(num1) + parseFloat(num2);
 }
 
 function subtract(num1, num2) {
