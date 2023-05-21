@@ -14,6 +14,7 @@ let calculator = (function () {
   let repeatedOperatorFlag = false;
   let prevOperator = "";
   let noEnteredSecondNumFlag = false;
+  let equalPressed = false;
   return {
     num1,
     operator,
@@ -24,7 +25,6 @@ let calculator = (function () {
   };
 })();
 
-// TODO add delete button
 function buttonSelection() {
   let part = this.className;
   if (part === "number") {
@@ -39,11 +39,15 @@ function buttonSelection() {
   if (part === "clear") {
     clearButton();
   }
+  if (part === "delete") {
+    deleteButton();
+  }
 }
 
 function numberChange(text) {
   const display = body.getElementsByClassName("displayLower");
   if (isOperator(calculator.operator)) {
+    isEqualPressed();
     calculator.noEnteredSecondNumFlag = false;
     calculator.num2 += text;
     display[0].textContent = calculator.num2;
@@ -53,6 +57,13 @@ function numberChange(text) {
     initialDisplayCondition(text);
     display[0].textContent = calculator.num1;
     calculator.noEnteredSecondNumFlag = true;
+  }
+}
+
+function isEqualPressed() {
+  if (calculator.equalPressed) {
+    calculator.num2 = "";
+    calculator.equalPressed = false;
   }
 }
 
@@ -98,6 +109,7 @@ function equalButton() {
   }
   if (calculator.noEnteredSecondNumFlag) {
     calculator.num2 = calculator.num1;
+    calculator.noEnteredSecondNumFlag = false;
   }
   const displayUpper = body.getElementsByClassName("displayUpper");
   const displayLower = body.getElementsByClassName("displayLower");
@@ -112,7 +124,7 @@ function equalButton() {
     " =";
   displayLower[0].textContent = result;
   calculator.num1 = "" + result;
-  calculator.num2 = "";
+  calculator.equalPressed = true;
 }
 
 function clearButton() {
@@ -123,6 +135,19 @@ function clearButton() {
   displayUpper[0].textContent = "";
   const displayLower = body.getElementsByClassName("displayLower");
   displayLower[0].textContent = "0";
+}
+
+function deleteButton() {
+  const displayLower = body.getElementsByClassName("displayLower");
+  if (calculator.noEnteredSecondNumFlag) {
+    let str = calculator.num1;
+    calculator.num1 = str.substr(0, str.length - 1);
+    displayLower[0].textContent = calculator.num1;
+  } else {
+    let str = calculator.num2;
+    calculator.num2 = str.substr(0, str.length - 1);
+    displayLower[0].textContent = calculator.num2;
+  }
 }
 
 function isOperator(part) {
