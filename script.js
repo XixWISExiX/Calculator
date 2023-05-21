@@ -14,14 +14,16 @@ let calculator = (function () {
   return { num1, operator, num2 };
 })();
 
-// TODO test
+// TODO test for repeated entries 12 + 7 - 5 = 14
+// TODO make decimal changes work
+// TODO add delete button
 function buttonSelection() {
   let part = this.className;
   if (part === "number") {
     numberChange(this.textContent);
   }
   if (isOperator(part)) {
-    calculator.operator = part;
+    operatorButton(part);
   }
   if (part === "equal") {
     equalButton();
@@ -32,25 +34,56 @@ function buttonSelection() {
 }
 
 function numberChange(text) {
+  const display = body.getElementsByClassName("displayLower");
   if (isOperator(calculator.operator)) {
     calculator.num2 += text;
+    display[0].textContent = calculator.num2;
   } else {
     calculator.num1 += text;
+    display[0].textContent = calculator.num1;
   }
 }
 
+function operatorButton(part) {
+  const displayUpper = body.getElementsByClassName("displayUpper");
+  const displayLower = body.getElementsByClassName("displayLower");
+  calculator.operator = part;
+  displayUpper[0].textContent = calculator.num1 + " " + operatorString(part);
+  displayLower[0].textContent = calculator.num1;
+}
+
+function operatorString(part) {
+  if (part === "addition") return "+";
+  if (part === "subtraction") return "-";
+  if (part === "multiplcation") return "×";
+  if (part === "division") return "÷";
+}
+
 function equalButton() {
-  const display = body.getElementsByClassName("displayLower");
+  const displayUpper = body.getElementsByClassName("displayUpper");
+  const displayLower = body.getElementsByClassName("displayLower");
   let result = operate(calculator.num1, calculator.operator, calculator.num2);
-  display[0].textContent = result;
+  displayUpper[0].textContent =
+    calculator.num1 +
+    " " +
+    operatorString(calculator.operator) +
+    " " +
+    calculator.num2 +
+    " =";
+  displayLower[0].textContent = result;
+  calculator.num1 = "" + result;
+  calculator.operator = "";
+  calculator.num2 = "";
 }
 
 function clearButton() {
   calculator.num1 = "";
   calculator.operator = "";
   calculator.num2 = "";
-  const display = body.getElementsByClassName("displayLower");
-  display[0].textContent = "";
+  const displayUpper = body.getElementsByClassName("displayUpper");
+  displayUpper[0].textContent = "";
+  const displayLower = body.getElementsByClassName("displayLower");
+  displayLower[0].textContent = "";
 }
 
 function isOperator(part) {
