@@ -27,7 +27,6 @@ let calculator = (function () {
 
 // TODO initial "." needs to spawn a "0" in front
 // TODO handle more than one "." entry
-// TODO handle division by 0
 // TODO add keyboard support
 function buttonSelection() {
   let part = this.className;
@@ -104,9 +103,19 @@ function makeChangesForRepeatedOperators() {
       calculator.prevOperator,
       calculator.num2
     );
+    checkZeroDivision();
     calculator.num1 = Math.round(result * 10000000000) / 10000000000;
     calculator.prevOperator = calculator.operator;
     calculator.num2 = "";
+  }
+}
+
+function checkZeroDivision() {
+  if (calculator.num2 === "0") {
+    const displayUpper = body.getElementsByClassName("displayUpper");
+    displayUpper[0].textContent =
+      calculator.num1 + " " + operatorString(calculator.operator);
+    calculator.num2 = calculator.num1;
   }
 }
 
@@ -131,7 +140,7 @@ function equalButton() {
   let result = operate(calculator.num1, calculator.operator, calculator.num2);
   result = Math.round(result * 10000000000) / 10000000000;
   displayUpper[0].textContent =
-    result +
+    calculator.num1 +
     " " +
     operatorString(calculator.operator) +
     " " +
@@ -140,6 +149,7 @@ function equalButton() {
   displayLower[0].textContent = result;
   calculator.num1 = "" + result;
   calculator.equalPressed = true;
+  checkZeroDivision();
 }
 
 function clearButton() {
@@ -196,6 +206,10 @@ function multiply(num1, num2) {
 }
 
 function divide(num1, num2) {
+  if (num2 === "0") {
+    alert("Can't divide by Zero you silly goose!");
+    return num1;
+  }
   return num1 / num2;
 }
 
