@@ -11,12 +11,19 @@ let calculator = (function () {
   let num1 = "0";
   let operator = "";
   let num2 = "";
-  let operatorFlag = false;
+  let repeatedOperatorFlag = false;
   let prevOperator = "";
-  return { num1, operator, num2, operatorFlag, prevOperator };
+  let noEnteredSecondNumFlag = false;
+  return {
+    num1,
+    operator,
+    num2,
+    repeatedOperatorFlag,
+    prevOperator,
+    noEnteredSecondNumFlag,
+  };
 })();
 
-// TODO make decimal changes work
 // TODO add delete button
 function buttonSelection() {
   let part = this.className;
@@ -37,13 +44,15 @@ function buttonSelection() {
 function numberChange(text) {
   const display = body.getElementsByClassName("displayLower");
   if (isOperator(calculator.operator)) {
+    calculator.noEnteredSecondNumFlag = false;
     calculator.num2 += text;
     display[0].textContent = calculator.num2;
-    calculator.operatorFlag = true;
+    calculator.repeatedOperatorFlag = true;
     calculator.prevOperator = calculator.operator;
   } else {
     initialDisplayCondition(text);
     display[0].textContent = calculator.num1;
+    calculator.noEnteredSecondNumFlag = true;
   }
 }
 
@@ -65,7 +74,7 @@ function operatorButton(part) {
 }
 
 function makeChangesForRepeatedOperators() {
-  if (calculator.operatorFlag) {
+  if (calculator.repeatedOperatorFlag) {
     calculator.num1 = operate(
       calculator.num1,
       calculator.prevOperator,
@@ -84,9 +93,15 @@ function operatorString(part) {
 }
 
 function equalButton() {
-  calculator.operatorFlag = false;
+  if (calculator.operator === "") {
+    return;
+  }
+  if (calculator.noEnteredSecondNumFlag) {
+    calculator.num2 = calculator.num1;
+  }
   const displayUpper = body.getElementsByClassName("displayUpper");
   const displayLower = body.getElementsByClassName("displayLower");
+  calculator.repeatedOperatorFlag = false;
   let result = operate(calculator.num1, calculator.operator, calculator.num2);
   displayUpper[0].textContent =
     calculator.num1 +
@@ -97,7 +112,6 @@ function equalButton() {
     " =";
   displayLower[0].textContent = result;
   calculator.num1 = "" + result;
-  calculator.operator = "";
   calculator.num2 = "";
 }
 
