@@ -8,13 +8,14 @@ function application() {
 }
 
 let calculator = (function () {
-  let num1 = "";
+  let num1 = "0";
   let operator = "";
   let num2 = "";
-  return { num1, operator, num2 };
+  let operatorFlag = false;
+  let prevOperator = "";
+  return { num1, operator, num2, operatorFlag, prevOperator };
 })();
 
-// TODO test for repeated entries 12 + 7 - 5 = 14
 // TODO make decimal changes work
 // TODO add delete button
 function buttonSelection() {
@@ -38,18 +39,41 @@ function numberChange(text) {
   if (isOperator(calculator.operator)) {
     calculator.num2 += text;
     display[0].textContent = calculator.num2;
+    calculator.operatorFlag = true;
+    calculator.prevOperator = calculator.operator;
+  } else {
+    initialDisplayCondition(text);
+    display[0].textContent = calculator.num1;
+  }
+}
+
+function initialDisplayCondition(text) {
+  if (calculator.num1 === "0") {
+    calculator.num1 = text;
   } else {
     calculator.num1 += text;
-    display[0].textContent = calculator.num1;
   }
 }
 
 function operatorButton(part) {
   const displayUpper = body.getElementsByClassName("displayUpper");
   const displayLower = body.getElementsByClassName("displayLower");
+  makeChangesForRepeatedOperators();
   calculator.operator = part;
   displayUpper[0].textContent = calculator.num1 + " " + operatorString(part);
   displayLower[0].textContent = calculator.num1;
+}
+
+function makeChangesForRepeatedOperators() {
+  if (calculator.operatorFlag) {
+    calculator.num1 = operate(
+      calculator.num1,
+      calculator.prevOperator,
+      calculator.num2
+    );
+    calculator.prevOperator = calculator.operator;
+    calculator.num2 = "";
+  }
 }
 
 function operatorString(part) {
@@ -60,6 +84,7 @@ function operatorString(part) {
 }
 
 function equalButton() {
+  calculator.operatorFlag = false;
   const displayUpper = body.getElementsByClassName("displayUpper");
   const displayLower = body.getElementsByClassName("displayLower");
   let result = operate(calculator.num1, calculator.operator, calculator.num2);
@@ -77,13 +102,13 @@ function equalButton() {
 }
 
 function clearButton() {
-  calculator.num1 = "";
+  calculator.num1 = "0";
   calculator.operator = "";
   calculator.num2 = "";
   const displayUpper = body.getElementsByClassName("displayUpper");
   displayUpper[0].textContent = "";
   const displayLower = body.getElementsByClassName("displayLower");
-  displayLower[0].textContent = "";
+  displayLower[0].textContent = "0";
 }
 
 function isOperator(part) {
