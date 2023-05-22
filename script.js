@@ -15,6 +15,7 @@ let calculator = (function () {
   let prevOperator = "";
   let noEnteredSecondNumFlag = false;
   let equalPressed = false;
+  let noDecimal = true;
   return {
     num1,
     operator,
@@ -22,11 +23,11 @@ let calculator = (function () {
     repeatedOperatorFlag,
     prevOperator,
     noEnteredSecondNumFlag,
+    equalPressed,
+    noDecimal,
   };
 })();
 
-// TODO initial "." needs to spawn a "0" in front
-// TODO handle more than one "." entry
 // TODO add keyboard support
 function buttonSelection() {
   let part = this.className;
@@ -49,10 +50,12 @@ function buttonSelection() {
 
 function numberChange(text) {
   const display = body.getElementsByClassName("displayLower");
+  let lastIndex = findLastIndex(text);
   if (isOperator(calculator.operator)) {
     isEqualPressed();
     calculator.noEnteredSecondNumFlag = false;
     calculator.num2 += text;
+    calculator.num2 = checkDecimals(text[lastIndex], calculator.num2);
     calculator.num2 = largeInput(calculator.num2);
     display[0].textContent = calculator.num2;
     calculator.repeatedOperatorFlag = true;
@@ -60,6 +63,7 @@ function numberChange(text) {
   } else {
     initialDisplayCondition(text);
     calculator.num1 = largeInput(calculator.num1);
+    calculator.num1 = checkDecimals(text[lastIndex], calculator.num1);
     display[0].textContent = calculator.num1;
     calculator.noEnteredSecondNumFlag = true;
   }
@@ -70,6 +74,17 @@ function isEqualPressed() {
     calculator.num2 = "";
     calculator.equalPressed = false;
   }
+}
+
+function checkDecimals(char, num) {
+  if (char !== ".") {
+    return num;
+  }
+  if (calculator.noDecimal) {
+    calculator.noDecimal = false;
+    return num;
+  }
+  return deleteTailOfString(num);
 }
 
 function initialDisplayCondition(text) {
@@ -94,6 +109,7 @@ function operatorButton(part) {
   calculator.operator = part;
   displayUpper[0].textContent = calculator.num1 + " " + operatorString(part);
   displayLower[0].textContent = calculator.num1;
+  calculator.noDecimal = true;
 }
 
 function makeChangesForRepeatedOperators() {
@@ -111,7 +127,7 @@ function makeChangesForRepeatedOperators() {
 }
 
 function checkZeroDivision() {
-  if (calculator.num2 === "0") {
+  if (divisionZero(calculator.num2)) {
     const displayUpper = body.getElementsByClassName("displayUpper");
     displayUpper[0].textContent =
       calculator.num1 + " " + operatorString(calculator.operator);
@@ -150,6 +166,7 @@ function equalButton() {
   calculator.num1 = "" + result;
   calculator.equalPressed = true;
   checkZeroDivision();
+  calculator.noDecimal = true;
 }
 
 function clearButton() {
@@ -160,17 +177,30 @@ function clearButton() {
   displayUpper[0].textContent = "";
   const displayLower = body.getElementsByClassName("displayLower");
   displayLower[0].textContent = "0";
+  calculator.noDecimal = true;
 }
 
 function deleteButton() {
   const displayLower = body.getElementsByClassName("displayLower");
   if (calculator.noEnteredSecondNumFlag) {
+    let lastIndex = findLastIndex(calculator.num1);
+    if (calculator.num1[lastIndex] === ".") {
+      calculator.noDecimal = true;
+    }
     calculator.num1 = deleteTailOfString(calculator.num1);
     displayLower[0].textContent = calculator.num1;
   } else {
+    let lastIndex = findLastIndex(calculator.num2);
+    if (calculator.num2[lastIndex] === ".") {
+      calculator.noDecimal = true;
+    }
     calculator.num2 = deleteTailOfString(calculator.num2);
     displayLower[0].textContent = calculator.num2;
   }
+}
+
+function findLastIndex(string) {
+  return string.length - 1;
 }
 
 function deleteTailOfString(number) {
@@ -206,11 +236,21 @@ function multiply(num1, num2) {
 }
 
 function divide(num1, num2) {
-  if (num2 === "0") {
+  if (divisionZero(num2)) {
     alert("Can't divide by Zero you silly goose!");
     return num1;
   }
   return num1 / num2;
+}
+
+function divisionZero(num) {
+  let size = num.length;
+  for (let i = 0; i < size; i++) {
+    if (!(num[i] === "0" || num[i] === ".")) {
+      return false;
+    }
+  }
+  return true;
 }
 
 document.addEventListener("DOMContentLoaded", application);
