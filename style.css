@@ -28,7 +28,7 @@ button {
   padding: 20px;
   border: solid black 2px;
   border-radius: 8px;
-  background: #968c8c;
+  background: #bbafaf;
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -59,10 +59,15 @@ button {
   display: flex;
   justify-content: space-between;
   width: 380px;
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none;
 }
 
 .clear,
 .delete {
+  background: #9ad69a;
   width: 180px;
 }
 
@@ -74,36 +79,48 @@ button:active {
   background: gray;
 }
 
+.clear:hover,
+.delete:hover {
+  background: #7fb37f;
+}
+
+.clear:active,
+.delete:active {
+  background: #537553;
+}
+
 .addition,
 .subtraction,
 .multiplcation,
 .division {
-  background: lightblue;
+  background: #b5ddeb;
 }
 
 .addition:hover,
 .subtraction:hover,
 .multiplcation:hover,
 .division:hover {
-  background: #65b5eb;
+  background: #8faeb9;
 }
 
 .addition:active,
 .subtraction:active,
 .multiplcation:active,
 .division:active {
-  background: #0a8ae0;
+  background: #698088;
 }
 
-/* .clear:hover {
-  background: grey;
-  color: white;
+.equal {
+  background: #e2bab3;
 }
 
-.clear:active {
-  background: black;
-  color: white;
-} */
+.equal:hover {
+  background: #bd9c96;
+}
+
+.equal:active {
+  background: #977e79;
+}
 
 .footer {
   margin-top: auto;
