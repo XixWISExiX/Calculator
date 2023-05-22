@@ -9,7 +9,14 @@ button {
   height: 75px;
 }
 
+.rowContainer {
+  margin-top: 5px;
+  display: flex;
+  justify-content: space-between;
+  width: 320px;
+}
+
 .clear,
 .delete {
-  width: 150px;
+  width: 155px;
 }
