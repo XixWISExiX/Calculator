@@ -1,0 +1,15 @@
+/* After Visual Changes, Make DOM traversal more efficient. */
+* {
+  margin: 0;
+  padding: 0;
+}
+
+button {
+  width: 75px;
+  height: 75px;
+}
+
+.clear,
+.delete {
+  width: 150px;
+}
