@@ -5,6 +5,64 @@ function application() {
   buttons.forEach((button) => {
     button.addEventListener("click", buttonSelection);
   });
+  document.addEventListener("keydown", (event) => {
+    event.preventDefault();
+    console.log(event.key);
+    if (isEqualKey(event.key)) {
+      equalButton();
+    }
+    if (isClearKey(event.key)) {
+      clearButton();
+    }
+    if (isDeleteKey(event.key)) {
+      deleteButton();
+    }
+    // Edge case here for division symbol
+    if (isOperatorKey(event.key)) {
+      operatorButton(getOperatorClass(event.key));
+    }
+    if (isNumberKey(event.key)) {
+      numberChange(event.key);
+    }
+  });
+}
+
+function isEqualKey(key) {
+  if (key === "=" || key === "Enter") return true;
+  return false;
+}
+function isClearKey(key) {
+  if (key === "Escape") return true;
+  return false;
+}
+function isDeleteKey(key) {
+  if (key === "Delete" || key === "Backspace") return true;
+  return false;
+}
+function isOperatorKey(key) {
+  if (key === "+") return true;
+  if (key === "-") return true;
+  if (key === "*") return true;
+  if (key === "/") return true;
+  return false;
+}
+
+function getOperatorClass(key) {
+  if (key === "+") return "addition";
+  if (key === "-") return "subtraction";
+  if (key === "*") return "multiplcation";
+  if (key === "/") return "division";
+}
+
+function isNumberKey(key) {
+  for (let i = 0; i < 10; i++) {
+    let stringNumber = "" + i;
+    if (key === stringNumber) {
+      return true;
+    }
+  }
+  if (key === ".") return true;
+  return false;
 }
 
 let calculator = (function () {
@@ -28,14 +86,10 @@ let calculator = (function () {
   };
 })();
 
-// TODO add keyboard support
 function buttonSelection() {
   let part = this.className;
   if (part === "number") {
     numberChange(this.textContent);
-  }
-  if (isOperator(part)) {
-    operatorButton(part);
   }
   if (part === "equal") {
     equalButton();
@@ -45,6 +99,9 @@ function buttonSelection() {
   }
   if (part === "delete") {
     deleteButton();
+  }
+  if (isOperator(part)) {
+    operatorButton(part);
   }
 }
 
