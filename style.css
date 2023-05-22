@@ -1,22 +1,113 @@
 /* After Visual Changes, Make DOM traversal more efficient. */
+@import url("https://fonts.googleapis.com/css2?family=DotGothic16&family=Outfit&family=Rubik:wght@500&family=Source+Sans+Pro&family=VT323&display=swap");
+
 * {
   margin: 0;
   padding: 0;
+  font-family: "Source Sans Pro", sans-serif;
+}
+
+.mainContainer {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 }
 
 button {
-  width: 75px;
-  height: 75px;
+  border: solid black 2px;
+  width: 85px;
+  height: 85px;
+  border-radius: 8px;
+  font-size: 30px;
+}
+
+.calculator {
+  margin-bottom: 10px;
+  padding: 20px;
+  border: solid black 2px;
+  border-radius: 8px;
+  background: #968c8c;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.display {
+  margin-bottom: 10px;
+  border: solid black 2px;
+  font-size: 32px;
+  padding: 0 10px;
+  text-align: end;
+  width: 350px;
+  background: white;
+  border-radius: 8px;
+}
+
+.displayUpper {
+  font-size: 20px;
+  min-height: 25px;
+}
+
+.displayLower {
+  min-height: 40px;
 }
 
 .rowContainer {
-  margin-top: 5px;
+  margin-top: 10px;
   display: flex;
   justify-content: space-between;
-  width: 320px;
+  width: 380px;
 }
 
 .clear,
 .delete {
-  width: 155px;
+  width: 180px;
+}
+
+button:hover {
+  background: #c2bfbf;
+}
+
+button:active {
+  background: gray;
+}
+
+.addition,
+.subtraction,
+.multiplcation,
+.division {
+  background: lightblue;
+}
+
+.addition:hover,
+.subtraction:hover,
+.multiplcation:hover,
+.division:hover {
+  background: #65b5eb;
+}
+
+.addition:active,
+.subtraction:active,
+.multiplcation:active,
+.division:active {
+  background: #0a8ae0;
+}
+
+/* .clear:hover {
+  background: grey;
+  color: white;
+}
+
+.clear:active {
+  background: black;
+  color: white;
+} */
+
+.footer {
+  margin-top: auto;
+  text-align: center;
+  font-size: 22px;
+  margin-bottom: 4px;
 }
